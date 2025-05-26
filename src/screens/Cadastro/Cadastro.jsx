@@ -84,7 +84,7 @@ const Cadastro = () => {
 
     if (!loading) {
       // Redirecionar ou limpar formulário, se necessário
-      navigation.navigate("Home"); // por exemplo
+      navigation.navigate("Login"); // por exemplo
     }
   };
 
