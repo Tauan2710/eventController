@@ -33,10 +33,10 @@ const useCadastro = () => {
         createdAt: new Date(),
       });
 
-      Alert.alert("Sucesso", "Usuário cadastrado com sucesso!");
+      alert("Sucesso: Usuário cadastrado com sucesso!");
     } catch (error) {
       console.error("Erro ao cadastrar usuário:", error);
-      Alert.alert("Erro", "Não foi possível realizar o cadastro.");
+      alert("Erro Não foi possível realizar o cadastro.");
     } finally {
       setLoading(false);
     }
