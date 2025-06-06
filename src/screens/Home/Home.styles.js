@@ -8,10 +8,10 @@ export const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   text: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: "bold",
     color: "#000",
-    marginBottom: 22,
+    marginBottom: 12,
   },
   count: {
     fontSize: 18,
@@ -32,26 +32,5 @@ export const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-  },
-  warning: {
-    fontSize: 16,
-    color: "red",
-    marginTop: 10,
-  },
-  eventInfo: {
-    marginTop: 20,
-    alignItems: "center",
-    color: "#333",
-  },
-  eventDetails: {
-    fontSize: 18,
-    color: "#333",
-    marginBottom: 10,
-    fontWeight: "bold",
-  },
-  resposta: {
-    fontSize: 18,
-    color: "red",
-    fontWeight: "bold",
   },
 });

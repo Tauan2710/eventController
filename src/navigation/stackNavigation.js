@@ -6,8 +6,8 @@ import { AppContext } from "../context/AppContext";
 
 import Login from "../screens/Login";
 import TabNavigator from "./TabNavigator";
-import ParticipanteForm from "../screens/ParticipanteForm";
-import Cadastro from "../screens/Cadastro/Cadastro";
+import SignUpScreen from "../screens/SignUp/SignUpScreen";
+import EventDetail from "../screens/DetalhesEvento";
 
 const Stack = createNativeStackNavigator();
 
@@ -24,16 +24,38 @@ const Routes = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator>
         {user ? (
           <>
-            <Stack.Screen name="Inicio" component={TabNavigator} />
-            <Stack.Screen name="AddParticipante" component={ParticipanteForm} />
+            <Stack.Screen
+              name="Home"
+              component={TabNavigator}
+              options={{ title: "Eventos" }}
+            />
+            <Stack.Screen
+              name="EventDetail"
+              component={EventDetail}
+              options={{ title: "Detalhes do Evento" }}
+            />
           </>
         ) : (
           <>
-            <Stack.Screen name="Login" component={Login} />
-            <Stack.Screen name="Cadastro" component={Cadastro} />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="SignUp"
+              component={SignUpScreen}
+              options={{
+                title: "Cadastrar usuário",
+                headerStyle: {
+                  backgroundColor: "#0F62AC",
+                },
+                headerTintColor: "#fff",
+              }}
+            />
           </>
         )}
       </Stack.Navigator>
