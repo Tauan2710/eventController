@@ -1,31 +1,33 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { styles } from "./eventItem.syles";
+import { View, Text, StyleSheet, Pressable } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { styles } from "./EventItem.style";
 
-const EventItem = ({ event }) => {
-  // Converte timestamp para Date legível
-  const eventDate = event.data?.toDate
-    ? event.data.toDate()
-    : new Date(event.data);
-  const formattedDate = eventDate.toLocaleString("pt-BR", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-    timeZoneName: "short",
-  });
+const EventItem = ({ evento }) => {
+  const navigation = useNavigation();
+
+  const handlePress = () => {
+    navigation.navigate("EventDetail", { evento });
+  };
+
+  const formatDate = (dataStr) => {
+    const date = new Date(dataStr);
+    return date.toLocaleDateString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   return (
-    <View style={styles.eventItem}>
-      <Text style={styles.eventName}>{event.nome}</Text>
-      <Text style={styles.eventDate}>{formattedDate}</Text>
-      <Text style={styles.eventLocation}>Local: {event.local}</Text>
-      <Text style={styles.participants}>
-        Participantes: {event.participantes?.length ?? 0}
-      </Text>
-    </View>
+    <Pressable onPress={handlePress} style={styles.container}>
+      <Text style={styles.title}>{evento.nome}</Text>
+      <Text style={styles.detail}>Local: {evento.local}</Text>
+      <Text style={styles.detail}>Data: {formatDate(evento.dataHora)}</Text>
+      <Text style={styles.detail}>Vagas: {evento.lotacaoMaxima}</Text>
+    </Pressable>
   );
 };
 

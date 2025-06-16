@@ -15,11 +15,7 @@ const Login = () => {
 
   const handleLogin = () => {
     login({ email, password });
-    navigation.navigate("Inicio");
-  };
-
-  const handleRegisterNavigation = () => {
-    navigation.navigate("Cadastro"); // Certifique-se de que a rota 'Register' esteja configurada no seu navegador
+    navigation.navigate("Home");
   };
 
   return (
@@ -28,41 +24,30 @@ const Login = () => {
       <View style={styles.form}>
         <CustomInput
           placeholder="Email"
-          label={"Email"}
+          label="Email"
           value={email}
           onChangeText={(e) => setEmail(e)}
         />
         <CustomInput
           placeholder="Senha"
-          label={"Senha"}
+          label="Senha"
           value={password}
           onChangeText={(e) => setPassword(e)}
           secureTextEntry
         />
         <FullWidthButton text="Entrar" title="Entrar" onPress={handleLogin} />
-        <TouchableOpacity
-          onPress={handleRegisterNavigation}
-          style={styles.registerLink}
-        >
-          <Text style={styles.registerText}>
-            Não tem uma conta? Cadastre-se
-          </Text>
-        </TouchableOpacity>
+
+        <View style={styles.registerContainer}>
+          <Text style={styles.registerText}>Não tem conta? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+            <Text style={[styles.registerText, styles.registerLink]}>
+              CADASTRE-SE
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
 };
-
-const localStyles = StyleSheet.create({
-  registerLink: {
-    marginTop: 10,
-    alignItems: "center",
-  },
-  registerText: {
-    color: "#007BFF",
-    fontSize: 14,
-    textDecorationLine: "underline",
-  },
-});
 
 export default Login;

@@ -1,7 +1,9 @@
 import React, { useState, useEffect, createContext } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../services/firebaseConfig";
+import { collection, addDoc, getDocs } from "firebase/firestore";
+import { auth, db } from "../services/firebaseConfig";
+
 export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
@@ -12,19 +14,20 @@ export const AppProvider = ({ children }) => {
   const login = async ({ email, password }) => {
     try {
       setLoading(true);
-      const { user } = await signInWithEmailAndPassword(auth, email, password);
-      const loggedUser = {
-        id: user.uid,
-        name: user.displayName || "Usuário",
-        email: user.email,
-      };
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const loggedUser = userCredential.user;
       setUser(loggedUser);
       await AsyncStorage.setItem("user", JSON.stringify(loggedUser));
       alert("Logado com sucesso");
     } catch (error) {
       alert("Erro ao fazer login: " + error.message);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const logout = async () => {
@@ -33,44 +36,70 @@ export const AppProvider = ({ children }) => {
   };
 
   const addParticipante = async ({ nome, email, telefone, idade }) => {
-    const newParticipante = {
-      id: Date.now(),
-      nome,
-      email,
-      telefone,
-      idade,
-    };
-    setParticipantes((prev) => [...prev, newParticipante]);
+    try {
+      setLoading(true);
+
+      // Adiciona no Firestore
+      await addDoc(collection(db, "participantes"), {
+        nome,
+        email,
+        telefone,
+        idade,
+      });
+
+      // Busca todos os participantes
+      const querySnapshot = await getDocs(collection(db, "participantes"));
+      const participantesList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      // Atualiza estado e armazenamento local
+      setParticipantes(participantesList);
+      await AsyncStorage.setItem(
+        "participantes",
+        JSON.stringify(participantesList)
+      );
+    } catch (error) {
+      alert("Erro ao adicionar participante: " + error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const removeParticipante = async (id) => {
+    // Aqui você pode implementar a exclusão do Firestore também com deleteDoc
     setParticipantes((prev) => prev.filter((p) => p.id !== id));
   };
 
-  useEffect(() => {
-    const loadUser = async () => {
+  const loadUserAndParticipantes = async () => {
+    try {
       const storedUser = await AsyncStorage.getItem("user");
       if (storedUser) {
         setUser(JSON.parse(storedUser));
       }
-      const storagedParticipantes = await AsyncStorage.getItem("participantes");
-      if (storagedParticipantes) {
-        setParticipantes(JSON.parse(storagedParticipantes));
-      }
-      setLoading(false);
-    };
-    loadUser();
-  }, []);
 
-  useEffect(() => {
-    const storeParticipantes = async () => {
+      const querySnapshot = await getDocs(collection(db, "participantes"));
+      const participantesList = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setParticipantes(participantesList);
       await AsyncStorage.setItem(
         "participantes",
-        JSON.stringify(participantes)
+        JSON.stringify(participantesList)
       );
-    };
-    storeParticipantes();
-  }, [participantes]);
+    } catch (error) {
+      console.log("Erro ao carregar dados:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadUserAndParticipantes();
+  }, []);
 
   return (
     <AppContext.Provider

@@ -8,7 +8,7 @@ import { styles } from "./Home.styles";
 const Home = () => {
   const navigation = useNavigation();
   const { participantes } = useContext(AppContext);
-  const [lotacao, SetVagas] = useState(2);
+  const [lotacao, setLotacao] = useState(2);
   const vagas = lotacao - participantes.length;
   const isLotado = participantes.length >= lotacao;
 
@@ -18,32 +18,21 @@ const Home = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}> Nome do Evento: 🎶Bagunça Pronta🎶</Text>
+      <Text style={styles.text}>Home</Text>
+      <Text style={styles.count}>
+        Participantes cadastrados: {participantes.length}
+      </Text>
+      <Text style={styles.count}>Vagas disponíveis: {vagas}</Text>
 
-      <View style={styles.eventInfo}>
-        <Text style={styles.eventDetails}>
-          Data: <Text style={styles.resposta}>25/12/2023</Text>
-        </Text>
-        <Text style={styles.eventDetails}>
-          Local: <Text style={styles.resposta}>Salão de Festas</Text>
-        </Text>
-        <Text style={styles.eventDetails}>
-          Lotação:<Text style={styles.resposta}> {lotacao}</Text>
-        </Text>
-        <Text style={styles.eventDetails}>
-          Vagas Disponíveis: <Text style={styles.resposta}>{vagas}</Text>
-        </Text>
-        {isLotado && (
-          <Text style={styles.warning}>Aviso:⚠️ Vagas Esgotadas! ⚠️</Text>
-        )}
-      </View>
-      <TouchableOpacity
-        disabled={isLotado}
-        style={styles.btn}
-        onPress={goToAddParticipante}
-      >
-        <Ionicons name="add" size={32} color="#fff" />
-      </TouchableOpacity>
+      {!isLotado && (
+        <TouchableOpacity
+          disabled={isLotado}
+          style={styles.btn}
+          onPress={goToAddParticipante}
+        >
+          <Ionicons name="add" size={32} color="#fff" />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
